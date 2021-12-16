@@ -166,9 +166,8 @@ public class JITProcessServiceImpl implements JITProcessService {
             Boolean isServerLessWorkflow = (Boolean) ruleFlowProcess.getMetaData("ServerlessWorkflow");
             if (isServerLessWorkflow != null && isServerLessWorkflow) {
                 for (Node node : ruleFlowProcess.getStartNodes()) {
-                    String type = (String) node.getMetaData().get(Metadata.TRIGGER_REF);
-                    if ("kafka".equals(type)) {
-                        String topicName = (String) node.getMetaData().get("Event.Source");
+                    String topicName = (String) node.getMetaData().get(Metadata.TRIGGER_REF);
+                    if (topicName != null) {
                         kafkaManager.subscribeTopic(topicName, (topic, payload) -> {
                             Object data = payload;
                             try {
@@ -198,7 +197,7 @@ public class JITProcessServiceImpl implements JITProcessService {
                 KogitoWorkItemImpl kogitoWorkItem = (KogitoWorkItemImpl) workItem;
                 WorkflowProcessInstance instance = (WorkflowProcessInstance) processRuntime.getProcessInstance(kogitoWorkItem.getProcessInstanceStringId());
                 KogitoNodeInstance nodeInstance = instance.getNodeInstance(kogitoWorkItem.getNodeInstanceStringId());
-                String topic = (String) nodeInstance.getNode().getMetaData().get("Event.Source");
+                String topic = (String) nodeInstance.getNode().getMetaData().get(Metadata.TRIGGER_REF);
                 String variable = (String) workItem.getParameter("Message");
                 Object data = instance.getVariable(variable);
                 kafkaManager.pushEvent(topic, data);

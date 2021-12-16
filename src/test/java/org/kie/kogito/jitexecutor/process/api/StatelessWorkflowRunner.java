@@ -14,44 +14,21 @@
  * limitations under the License.
  */
 
+
 package org.kie.kogito.jitexecutor.process.api;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-
-import static io.restassured.RestAssured.given;
-
-@QuarkusTest
-public class StatelessProcessResourceTest {
-
-    @BeforeEach
-    public void bootstrap() {
-        Response response = given()
-                .contentType(ContentType.JSON)
-                .when().post("/runtime/compile");
-
-        response.then()
-                .statusCode(200);
-    }
-
-    @Test
-    public void testApplicantWorkflow() throws Exception {
-
+public class StatelessWorkflowRunner {
+    public static void main(String[] args) throws Exception {
         try (KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(KafkaUtil.createProducerProperties())) {
-            kafkaProducer.send(new ProducerRecord<String, String>("applicants", "applicants", "{ \"salary\" : 3500 } ")).get();
+            kafkaProducer.send(new ProducerRecord<String, String>("applicants", "applicants", "{ \"salary\" : 2000 } ")).get();
         }
 
         String value = null;
@@ -61,11 +38,6 @@ public class StatelessProcessResourceTest {
                 value = record.value();
             }
         }
-        // straight through process
-        Assertions.assertNotNull(value);
-        Assertions.assertEquals("{\"salary\":3500,\"decision\":\"Approved\"}", value);
+        System.out.println(value);
     }
-
-
-
 }

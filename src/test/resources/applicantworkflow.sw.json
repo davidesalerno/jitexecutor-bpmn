@@ -7,13 +7,11 @@
   "events": [
     {
       "name": "NewApplicantEvent",
-      "source": "applicants",
-      "type": "kafka"
+      "type": "applicants"
     },
     {
       "name": "ApplicantDecisionEvent",
-      "source": "decisions",
-      "type": "kafka"
+      "type": "decisions"
     }
   ],
   "states": [

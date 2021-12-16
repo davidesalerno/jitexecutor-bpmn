@@ -99,6 +99,7 @@
 		</dependencies>
 	</dependencyManagement>
 	<build>
+		<finalName>workflow</finalName>
 		<plugins>
 			<plugin>
 				<groupId>io.quarkus</groupId>
