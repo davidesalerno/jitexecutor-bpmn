@@ -158,7 +158,7 @@ public class JITProcessServiceImpl implements JITProcessService {
         List<org.kie.api.definition.process.Process> processDefinitions = processBuild.stream()
                 .filter(e -> !e.hasErrors())
                 .map(ProcessBuild::process)
-                .map(e -> ((AbstractProcess<?>) e).process())
+                .map(e -> ((AbstractProcess<?>) e).get())
                 .collect(Collectors.toList());
 
         for (org.kie.api.definition.process.Process process : processDefinitions) {

@@ -18,7 +18,6 @@ package org.kie.kogito.jitexecutor.process.api;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -31,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+
 
 import static io.restassured.RestAssured.given;
 
