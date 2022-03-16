@@ -55,8 +55,8 @@ public class SWFProcessFactory extends AbstractProcessFactory implements Process
 
     private Process getWorkflowParser(ProcessFile processFile) throws JsonProcessingException {
         Workflow workflow = ServerlessWorkflowUtils.getObjectMapper("json").readValue(processFile.content(), Workflow.class);
-        ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(workflow);
-        RuleFlowProcess process = (RuleFlowProcess) parser.getProcess();
+        ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(workflow, null);
+        RuleFlowProcess process = (RuleFlowProcess) parser.getProcessInfo().info();
         process.setMetaData("ServerlessWorkflow", Boolean.TRUE);
         return process;
     }

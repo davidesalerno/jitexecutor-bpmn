@@ -18,15 +18,14 @@ package org.kie.kogito.jitexecutor.process;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.kafka.clients.consumer.Consumer;
@@ -37,12 +36,18 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import io.quarkus.logging.Log;
+import org.kie.kogito.jitexecutor.config.KafkaConfig;
 
 @Singleton
 public class KafkaManager {
 
     private Producer<String, String> kafkaProducer;
     private Consumer<String, String> kafkaConsumer;
+
+    private AtomicBoolean initialized = new AtomicBoolean(false);
+
+    @Inject
+    KafkaConfig config;
 
     public static class Reference {
         int counter;
@@ -72,15 +77,21 @@ public class KafkaManager {
 
     private ScheduledExecutorService executorService;
 
-    public KafkaManager() {
-        kafkaProducer = new KafkaProducer<>(createProducerProperties());
-        kafkaConsumer = new KafkaConsumer<>(createConsumerProperties());
-        references = new HashMap<>();
-        executorService = Executors.newScheduledThreadPool(1);
-        executorService.scheduleWithFixedDelay(this::pollEvent, 0, 1000L, TimeUnit.MILLISECONDS);
+    private void init() {
+        if(!initialized.get()){
+            kafkaProducer = new KafkaProducer<>(createProducerProperties());
+            kafkaConsumer = new KafkaConsumer<>(createConsumerProperties());
+            references = new HashMap<>();
+            executorService = Executors.newScheduledThreadPool(1);
+            executorService.scheduleWithFixedDelay(this::pollEvent, 0, 1000L, TimeUnit.MILLISECONDS);
+            initialized.set(true);
+        }
     }
 
     public synchronized void subscribeTopic(String topicName, BiConsumer<String, String> consumer) {
+        if(!initialized.get()){
+            init();
+        }
         if (references.containsKey(topicName)) {
             references.get(topicName).counter++;
             return;
@@ -91,12 +102,17 @@ public class KafkaManager {
     }
 
     public synchronized void clear() {
-        Log.info("unsubscribe from all topics");
-        kafkaConsumer.unsubscribe();
-        references.clear();
+        if(initialized.get()){
+            Log.info("unsubscribe from all topics");
+            kafkaConsumer.unsubscribe();
+            references.clear();
+        }
     }
 
     public synchronized void unsubscribeTopic(String topicName) {
+        if(!initialized.get()){
+            init();
+        }
         Reference reference = references.get(topicName);
         if (reference != null) {
             reference.counter--;
@@ -107,10 +123,16 @@ public class KafkaManager {
     }
 
     public void pushEvent(String topicName, Object data) {
+        if(!initialized.get()){
+            init();
+        }
         kafkaProducer.send(new ProducerRecord<String, String>(topicName, data.toString()));
     }
 
     public synchronized void pollEvent() {
+        if(!initialized.get()){
+            init();
+        }
         try {
             if (kafkaConsumer.subscription().isEmpty()) {
                 return;
@@ -124,6 +146,10 @@ public class KafkaManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public KafkaConfig getConfig(){
+        return config;
     }
 
     private Properties createConsumerProperties() {
@@ -142,14 +168,17 @@ public class KafkaManager {
 
     private Properties createCommonProperties() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "127.0.0.1:9092");
+        props.put("bootstrap.servers", config.bootstrap().servers());
         props.put("group.id", "group-id");
         return props;
     }
 
     public synchronized void dispose() {
-        executorService.shutdownNow();
-        kafkaProducer.close();
-        kafkaConsumer.close();
+        if(initialized.get()){
+            executorService.shutdownNow();
+            kafkaProducer.close();
+            kafkaConsumer.close();
+        }
+
     }
 }

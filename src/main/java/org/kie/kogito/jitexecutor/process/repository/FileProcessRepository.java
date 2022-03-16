@@ -83,7 +83,7 @@ public class FileProcessRepository implements ProcessRepository {
                     .collect(Collectors.toList()));
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.warn("No file in the input folder " + path);
         }
         return processes;
     }
