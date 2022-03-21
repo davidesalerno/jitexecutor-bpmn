@@ -27,12 +27,13 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 
 public class StatelessWorkflowRunner {
     public static void main(String[] args) throws Exception {
-        try (KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(KafkaUtil.createProducerProperties())) {
+        KafkaUtil kafkaUtil = new KafkaUtil("127.0.0.1:9092");
+        try (KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(kafkaUtil.createProducerProperties())) {
             kafkaProducer.send(new ProducerRecord<String, String>("applicants", "applicants", "{ \"salary\" : 2000 } ")).get();
         }
 
         String value = null;
-        try (KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(KafkaUtil.createConsumerProperties())) {
+        try (KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(kafkaUtil.createConsumerProperties())) {
             kafkaConsumer.subscribe(Collections.singleton("decisions"));
             for (ConsumerRecord<String, String> record : kafkaConsumer.poll(Duration.ofMillis(5000))) {
                 value = record.value();

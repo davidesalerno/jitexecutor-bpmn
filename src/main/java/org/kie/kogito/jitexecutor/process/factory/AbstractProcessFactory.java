@@ -44,7 +44,8 @@ import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.ProcessContext;
-import org.kie.kogito.expr.jsonpath.JsonPathExpression;
+import org.kie.kogito.expr.jsonpath.JsonPathParsedExpression;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jitexecutor.process.ProcessBuild;
 import org.mvel2.ErrorDetail;
@@ -137,12 +138,12 @@ public abstract class AbstractProcessFactory {
                 String variable = (String) constraint.getMetaData("Variable");
                 if (constraint.getDialect().equals("jsonpath")) {
                     contraintEvaluator.setEvaluator(new ReturnValueEvaluator() {
-                        private JsonPathExpression expr = new JsonPathExpression(constraint.getConstraint());
+                        private JsonPathParsedExpression expr = new JsonPathParsedExpression(constraint.getConstraint());
 
                         @Override
                         public Object evaluate(KogitoProcessContext processContext) throws Exception {
                             Object data = processContext.getVariable(variable);
-                            return expr.eval(data, Boolean.class ,processContext);
+                            return expr.eval(data, Boolean.class);
                         }
 
                     });
@@ -167,10 +168,10 @@ public abstract class AbstractProcessFactory {
     public static void main(String[] args) {
         try {
             // "$.[?(@.salary >= 3000)]";
-            JsonPathExpression expr = new JsonPathExpression("$.[?(@.salary >= 3000)]");
+            JsonPathParsedExpression expr = new JsonPathParsedExpression("$.[?(@.salary >= 3000)]");
             ObjectMapper mapper = new ObjectMapper();
             Object data = mapper.readTree("{ \"salary\" : 3500 } ");
-            Object ok = expr.eval(data, Object.class,null);
+            Object ok = expr.eval(data, Object.class);
             System.out.println(ok);
         } catch (JsonProcessingException e) {
             // do nothing

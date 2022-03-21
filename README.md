@@ -32,4 +32,17 @@ you will see:
 ```
 you can add additional deployments anytime
 
-## Kubernetes
+## Cloud enablement
+### Kubernetes
+#### Prerequisites
+You will need:
+- Java 11+ installed
+- Environment variable JAVA_HOME set accordingly
+- Maven 3.8.1+ installed
+- a Kubernetes cluster up ad running ([minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/) and/or [crc](https://developers.redhat.com/products/codeready-containers/overview) are also fine)
+- the OLM component active (Operator Lifecycle Manager)
+#### Install
+```
+cd scritps
+./install.sh
+```

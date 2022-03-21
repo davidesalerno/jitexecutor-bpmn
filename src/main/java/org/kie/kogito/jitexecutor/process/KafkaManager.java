@@ -137,7 +137,7 @@ public class KafkaManager {
             if (kafkaConsumer.subscription().isEmpty()) {
                 return;
             }
-            for (ConsumerRecord<String, String> record : kafkaConsumer.poll(Duration.of(1000L, ChronoUnit.MILLIS))) {
+            for (ConsumerRecord<String, String> record : kafkaConsumer.poll(Duration.of(5000L, ChronoUnit.MILLIS))) {
                 Reference reference = references.get(record.topic());
                 if (reference != null) {
                     reference.consumer.accept(record.topic(), record.value());
