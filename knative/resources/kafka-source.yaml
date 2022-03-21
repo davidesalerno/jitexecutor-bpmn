@@ -1,0 +1,15 @@
+apiVersion: sources.knative.dev/v1beta1
+kind: KafkaSource
+metadata:
+  name: kafka-source
+spec:
+  consumerGroup: jitexecutor-bpmn
+  bootstrapServers:
+    - my-cluster-kafka-bootstrap:9092
+  topics:
+    - applicants
+  sink:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: jitexecutor-bpmn

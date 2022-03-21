@@ -9,7 +9,7 @@ echo "#  If you are using minikube:                                          #"
 echo "#                                                                      #"
 echo "#  minikube start                                                      #"
 echo "#  minikube addons enable olm                                          #"
-echo "#  eval $(minikube docker-env)                                         #"
+echo '#  eval $(minikube docker-env)                                         #'
 echo "#                                                                      #"
 echo "########################################################################"
 
@@ -49,5 +49,13 @@ sleep 1m
 echo "Creating configmap"
 kubectl create configmap input-sw --from-file="${TARGET_DIR}/configmap/applicantworkflow.sw.json" -n ${PROJECT_NAME}
 
-echo "Deploying jitexecutor"
-kubectl apply -f "${TARGET_DIR}/jitexecutor.yaml" -n ${PROJECT_NAME}
+if [[ "x$1" == "x" ]] || [[ "$1" == "kubernetes" ]] ; then
+     echo "Continuing setup for kubernetes"
+     source "${SCRIPTS_DIR}/install-kubernetes.sh"
+elif [ "$1" == "knative"  ]; then
+     echo "Continuing setup for knative"
+     TARGET_DIR="./knative/resources"
+     source "${SCRIPTS_DIR}/install-knative.sh"
+fi
+
+install

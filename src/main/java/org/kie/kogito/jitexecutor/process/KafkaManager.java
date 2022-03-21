@@ -156,6 +156,8 @@ public class KafkaManager {
         Properties props = createCommonProperties();
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("auto.offset.reset","earliest");
+        props.put("group.id", "jitexecutor-bpmn");
         return props;
     }
 
@@ -169,7 +171,6 @@ public class KafkaManager {
     private Properties createCommonProperties() {
         Properties props = new Properties();
         props.put("bootstrap.servers", config.bootstrap().servers());
-        props.put("group.id", "group-id");
         return props;
     }
 
