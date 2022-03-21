@@ -33,6 +33,22 @@ you will see:
 you can add additional deployments anytime
 
 ## Cloud enablement
+### Image
+An image of this service is available on Quay.io
+- https://quay.io/repository/dsalerno/jitexecutor-bpmn
+### General considerations
+The workflow in the deployment can be pushed using a config map. 
+
+You can quickly create a ConfigMap using the command:
+
+``` kubectl create configmap input-sw --from-file="<path you your sw.json>" -n <namespace> ```
+
+An example to mount the ConfiMap into the required path could be found in the Deployment:
+- kubernetes/resources/jitexecutor.yaml
+
+If you want the service up and running with the test applicantworkflow.sw.json and Kafka with the needed topics you 
+jump to the next section or look at the ```scripts/install.sh``` file.
+
 ### Kubernetes
 #### Prerequisites
 You will need:
