@@ -1,0 +1,11 @@
+apiVersion: bindings.knative.dev/v1beta1
+kind: KafkaBinding
+metadata:
+  name: kafka-binding-jitexecutor-bpmn
+spec:
+  subject:
+    apiVersion: serving.knative.dev/v1
+    kind: Service
+    name: jitexecutor-bpmn
+  bootstrapServers:
+    - my-cluster-kafka-bootstrap:9092
