@@ -1,0 +1,43 @@
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: jitexecutor-bpmn
+  name: jitexecutor-bpmn
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: jitexecutor-bpmn
+        autoscaling.knative.dev/initial-scale: "0"
+    spec:
+      containerConcurrency: 0
+      containers:
+        - image: quay.io/repository/dsalerno/jitexecutor-bpmn:1.0.0-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ORG_KIE_DEPLOYMENT_PATH
+              value: /deployments/data
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /q/health/live
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: jitexecutor-bpmn
+          ports:
+            - containerPort: 8080
+              name: http1
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /deployments/data/applicantworkflow.sw.json
+              name: input-sw
+              subPath: applicantworkflow.sw.json
+      volumes:
+        - name: input-sw
+          configMap:
+            name: input-sw

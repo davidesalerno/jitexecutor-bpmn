@@ -45,7 +45,6 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.kogito.expr.jsonpath.JsonPathParsedExpression;
-import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jitexecutor.process.ProcessBuild;
 import org.mvel2.ErrorDetail;

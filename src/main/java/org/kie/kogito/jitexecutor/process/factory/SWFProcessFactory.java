@@ -26,7 +26,6 @@ import org.kie.kogito.jitexecutor.process.ProcessFile;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.serverlessworkflow.api.Workflow;
