@@ -80,12 +80,7 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-container-image-docker</artifactId>
     </dependency>
-    <!-- Enables Knative integration with Kogito     -->
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-knative-eventing</artifactId>
-    </dependency>
-    <!-- Enables Kubernetes and Knative resources generation for Kogito -->
+    <!-- Enables Kubernetes resources generation for Kogito -->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-kubernetes</artifactId>
