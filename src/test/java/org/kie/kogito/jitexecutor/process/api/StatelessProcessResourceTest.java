@@ -63,7 +63,7 @@ public class StatelessProcessResourceTest {
         String value = null;
         try (KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(kafkaUtil.createConsumerProperties())) {
             kafkaConsumer.subscribe(Collections.singleton("decisions"));
-            for (ConsumerRecord<String, String> record : kafkaConsumer.poll(Duration.ofMillis(15000))) {
+            for (ConsumerRecord<String, String> record : kafkaConsumer.poll(Duration.ofMillis(5000))) {
                 value = record.value();
             }
         }

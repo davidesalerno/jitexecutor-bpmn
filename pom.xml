@@ -11,7 +11,7 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <version.io.quarkus>2.7.4.Final</version.io.quarkus>
-    <version.org.kie.kogito>2.0.0-SNAPSHOT</version.org.kie.kogito>
+    <version.org.kie.kogito>1.15.0.Final</version.org.kie.kogito>
   </properties>
   <dependencyManagement>
     <dependencies>

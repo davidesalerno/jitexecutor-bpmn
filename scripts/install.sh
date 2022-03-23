@@ -38,7 +38,7 @@ sleep 5m
 echo "Creating Kafka cluster"
 kubectl apply -f "${TARGET_DIR}/kafka.yaml" -n ${PROJECT_NAME}
 
-sleep 2m
+sleep 3m
 
 echo "Creating Kafka topics"
 kubectl apply -f "${TARGET_DIR}/kafka-topics.yaml" -n ${PROJECT_NAME}
