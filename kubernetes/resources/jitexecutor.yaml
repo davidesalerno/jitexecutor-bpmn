@@ -51,7 +51,7 @@ spec:
               value: "my-cluster-kafka-bootstrap:9092"
             - name: ORG_KIE_DEPLOYMENT_PATH
               value: /deployments/data
-          image: dsalerno/jitexecutor-bpmn:1.0.0-SNAPSHOT
+          image: quay.io/dsalerno/jitexecutor-bpmn:1.0.0-SNAPSHOT
           imagePullPolicy: IfNotPresent
           name: jitexecutor-bpmn
           ports:

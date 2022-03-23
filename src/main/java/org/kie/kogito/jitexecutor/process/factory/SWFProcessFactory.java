@@ -18,10 +18,7 @@ package org.kie.kogito.jitexecutor.process.factory;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.serverlessworkflow.api.events.EventDefinition;
-import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.kogito.jitexecutor.process.ProcessBuild;
 import org.kie.kogito.jitexecutor.process.ProcessFactory;
@@ -60,18 +57,6 @@ public class SWFProcessFactory extends AbstractProcessFactory implements Process
         Workflow workflow = ServerlessWorkflowUtils.getObjectMapper("json").readValue(processFile.content(), Workflow.class);
         ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(workflow);
         RuleFlowProcess process = (RuleFlowProcess) parser.getProcess();
-        for (Node node : process.getStartNodes()) {
-            if (node.getMetaData().get(Metadata.TRIGGER_REF) != null) {
-                EventDefinition eventDefinition = ServerlessWorkflowUtils.getWorkflowEventFor(workflow, node.getName());
-                node.getMetaData().put("Event.Source", eventDefinition.getSource());
-            }
-        }
-        for (Node node : process.getEndNodes()) {
-            if (node.getMetaData().get(Metadata.TRIGGER_REF) != null) {
-                EventDefinition eventDefinition = ServerlessWorkflowUtils.getWorkflowEventFor(workflow, node.getName());
-                node.getMetaData().put("Event.Source", eventDefinition.getSource());
-            }
-        }
         process.setMetaData("ServerlessWorkflow", Boolean.TRUE);
         return process;
     }
