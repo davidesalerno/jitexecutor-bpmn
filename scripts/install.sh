@@ -13,14 +13,20 @@ echo '#  eval $(minikube docker-env)                                         #'
 echo "#                                                                      #"
 echo "########################################################################"
 
-./mvnw clean package -Dquarkus.container-image.build=true
+./mvnw clean package -DskipTests -Dquarkus.container-image.build=true
+
+if "$DRY_RUN"; then
+    cmd=echo
+else
+    cmd=kubectl
+fi
 
 PROJECT_NAME=$2
 if [ "x$2" == "x"  ]; then
      echo "Setting project/namespace name to sw-runner-poc"
      PROJECT_NAME="sw-runner-poc"
 fi
-kubectl create namespace "$PROJECT_NAME"
+$cmd create namespace "$PROJECT_NAME"
 
 TARGET_DIR="./kubernetes/resources"
 SCRIPTS_DIR="./scripts"
@@ -30,24 +36,30 @@ echo "Installing Strimzi Operator"
 wget "https://github.com/strimzi/strimzi-kafka-operator/releases/download/${STRIMZI_VERSION}/strimzi-${STRIMZI_VERSION}.tar.gz" -P "$TARGET_DIR/strimzi"
 tar zxf "${TARGET_DIR}/strimzi/strimzi-${STRIMZI_VERSION}.tar.gz" -C "$TARGET_DIR"
 sed -i 's/namespace: .*/namespace: '"${PROJECT_NAME}"'/' "${TARGET_DIR}"/strimzi-"${STRIMZI_VERSION}"/install/cluster-operator/*RoleBinding*.yaml
-kubectl apply -f "${TARGET_DIR}/strimzi-${STRIMZI_VERSION}/install/cluster-operator/" -n ${PROJECT_NAME}
+$cmd apply -f "${TARGET_DIR}/strimzi-${STRIMZI_VERSION}/install/cluster-operator/" -n ${PROJECT_NAME}
 
 echo "Sleeping in order to have the strimzi operator up and running"
-sleep 5m
+if [ "$dry_run" = true ]; then
+    sleep 5m
+fi
 
 echo "Creating Kafka cluster"
-kubectl apply -f "${TARGET_DIR}/kafka.yaml" -n ${PROJECT_NAME}
+$cmd apply -f "${TARGET_DIR}/kafka.yaml" -n ${PROJECT_NAME}
 
-sleep 3m
+if [ "$dry_run" = true ]; then
+    sleep 3m
+fi
 
 echo "Creating Kafka topics"
-kubectl apply -f "${TARGET_DIR}/kafka-topics.yaml" -n ${PROJECT_NAME}
+$cmd apply -f "${TARGET_DIR}/kafka-topics.yaml" -n ${PROJECT_NAME}
 
 echo "Sleeping in order to have the kafka cluster with the topics created"
-sleep 1m
+if [ "$dry_run" = true ]; then
+    sleep 1m
+fi
 
 echo "Creating configmap"
-kubectl create configmap input-sw --from-file="${TARGET_DIR}/configmap/applicantworkflow.sw.json" -n ${PROJECT_NAME}
+$cmd create configmap input-sw --from-file="${TARGET_DIR}/configmap/applicantworkflow.sw.json" -n ${PROJECT_NAME}
 
 if [[ "x$1" == "x" ]] || [[ "$1" == "kubernetes" ]] ; then
      echo "Continuing setup for kubernetes"
