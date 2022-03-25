@@ -5,16 +5,16 @@ metadata:
   annotations:
     app.quarkus.io/build-timestamp: 2022-03-16 - 14:05:25 +0000
   labels:
-    app.kubernetes.io/name: jitexecutor-bpmn
+    app.kubernetes.io/name: workflow-runner
     app.kubernetes.io/version: 1.0.0-SNAPSHOT
-  name: jitexecutor-bpmn
+  name: workflow-runner
 spec:
   ports:
     - name: http
       port: 80
       targetPort: 8080
   selector:
-    app.kubernetes.io/name: jitexecutor-bpmn
+    app.kubernetes.io/name: workflow-runner
     app.kubernetes.io/version: 1.0.0-SNAPSHOT
   type: ClusterIP
 ---
@@ -24,21 +24,21 @@ metadata:
   annotations:
     app.quarkus.io/build-timestamp: 2022-03-16 - 14:05:25 +0000
   labels:
-    app.kubernetes.io/name: jitexecutor-bpmn
+    app.kubernetes.io/name: workflow-runner
     app.kubernetes.io/version: 1.0.0-SNAPSHOT
-  name: jitexecutor-bpmn
+  name: workflow-runner
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: jitexecutor-bpmn
+      app.kubernetes.io/name: workflow-runner
       app.kubernetes.io/version: 1.0.0-SNAPSHOT
   template:
     metadata:
       annotations:
         app.quarkus.io/build-timestamp: 2022-03-16 - 14:05:25 +0000
       labels:
-        app.kubernetes.io/name: jitexecutor-bpmn
+        app.kubernetes.io/name: workflow-runner
         app.kubernetes.io/version: 1.0.0-SNAPSHOT
     spec:
       containers:
@@ -51,9 +51,9 @@ spec:
               value: "my-cluster-kafka-bootstrap:9092"
             - name: ORG_KIE_DEPLOYMENT_PATH
               value: /deployments/data
-          image: quay.io/dsalerno/jitexecutor-bpmn:1.0.0-SNAPSHOT
+          image: quay.io/dsalerno/workflow-runner:1.0.0-SNAPSHOT
           imagePullPolicy: IfNotPresent
-          name: jitexecutor-bpmn
+          name: workflow-runner
           ports:
             - containerPort: 8080
               name: http

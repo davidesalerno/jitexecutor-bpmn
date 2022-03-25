@@ -156,8 +156,7 @@ public class KafkaManager {
         Properties props = createCommonProperties();
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("auto.offset.reset","earliest");
-        props.put("group.id", "jitexecutor-bpmn");
+        props.put("group.id", "workflow-runner");
         return props;
     }
 

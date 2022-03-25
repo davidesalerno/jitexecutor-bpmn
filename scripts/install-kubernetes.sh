@@ -1,6 +1,6 @@
 #!/bin/bash
 function install() {
-   echo "Deploying jitexecutor"
-   $cmd apply -f "${TARGET_DIR}/jitexecutor.yaml" -n ${PROJECT_NAME}
+   echo "Deploying workflow-runner"
+   $cmd apply -f "${TARGET_DIR}/runner.yaml" -n ${PROJECT_NAME}
 
 }
