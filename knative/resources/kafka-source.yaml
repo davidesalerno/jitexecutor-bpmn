@@ -3,7 +3,7 @@ kind: KafkaSource
 metadata:
   name: kafka-source
 spec:
-  consumerGroup: jitexecutor-bpmn
+  consumerGroup: workflow-runner
   bootstrapServers:
     - my-cluster-kafka-bootstrap:9092
   topics:
@@ -12,4 +12,4 @@ spec:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: jitexecutor-bpmn
+      name: workflow-runner

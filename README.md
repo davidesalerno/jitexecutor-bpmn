@@ -35,7 +35,7 @@ you can add additional deployments anytime
 ## Cloud enablement
 ### Image
 An image of this service is available on Quay.io
-- https://quay.io/repository/dsalerno/jitexecutor-bpmn
+- https://quay.io/repository/dsalerno/workflow-runner
 
 ### General considerations
 The workflow in the deployment can be pushed using a config map. 
@@ -45,7 +45,7 @@ You can quickly create a ConfigMap using the command:
 ``` kubectl create configmap input-sw --from-file="<path you your sw.json>" -n <namespace> ```
 
 An example to mount the ConfiMap into the required path could be found in the Deployment:
-- kubernetes/resources/jitexecutor.yaml
+- kubernetes/resources/runner.yaml
 
 If you want the service up and running with the test applicant workflow (applicantworkflow.sw.json) and Kafka with the needed topics you 
 jump to the next section or look at the ```scripts/install.sh``` file. 
@@ -84,7 +84,7 @@ cd scritps
 
 #### Test
 To test the **applicant** workflow you can push some events to Kafka **applicants** topic and see that Knative will deploy 
-a pod of the jitexecutor-bpmn that will run the workflow with the provided data and push the result on the Kafka 
+a pod of the workflow-runner that will run the workflow with the provided data and push the result on the Kafka 
 **decisions** topic.
 
 Supposing that you PoC is running on namespace **sw-runner-poc**, you can start a Kafka producer with the command:

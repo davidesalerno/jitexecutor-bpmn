@@ -3,18 +3,18 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/name: jitexecutor-bpmn
-  name: jitexecutor-bpmn
+    app.kubernetes.io/name: workflow-runner
+  name: workflow-runner
 spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: jitexecutor-bpmn
+        app.kubernetes.io/name: workflow-runner
         autoscaling.knative.dev/initial-scale: "0"
     spec:
       containerConcurrency: 0
       containers:
-        - image: quay.io/repository/dsalerno/jitexecutor-bpmn:1.0.0-SNAPSHOT
+        - image: quay.io/repository/dsalerno/workflow-runner:1.0.0-SNAPSHOT
           imagePullPolicy: IfNotPresent
           env:
             - name: ORG_KIE_DEPLOYMENT_PATH
@@ -28,7 +28,7 @@ spec:
             periodSeconds: 30
             successThreshold: 1
             timeoutSeconds: 10
-          name: jitexecutor-bpmn
+          name: workflow-runner
           ports:
             - containerPort: 8080
               name: http1
