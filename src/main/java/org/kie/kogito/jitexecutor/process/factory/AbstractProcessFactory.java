@@ -44,9 +44,11 @@ import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.ProcessContext;
-import org.kie.kogito.expr.jsonpath.JsonPathParsedExpression;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jitexecutor.process.ProcessBuild;
+import org.kie.kogito.process.expr.Expression;
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.mvel2.ErrorDetail;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
@@ -137,12 +139,12 @@ public abstract class AbstractProcessFactory {
                 String variable = (String) constraint.getMetaData("Variable");
                 if (constraint.getDialect().equals("jsonpath")) {
                     contraintEvaluator.setEvaluator(new ReturnValueEvaluator() {
-                        private JsonPathParsedExpression expr = new JsonPathParsedExpression(constraint.getConstraint());
+                        private Expression expr = ExpressionHandlerFactory.get("jsonpath", constraint.getConstraint());
 
                         @Override
                         public Object evaluate(KogitoProcessContext processContext) throws Exception {
                             Object data = processContext.getVariable(variable);
-                            return expr.eval(data, Boolean.class);
+                            return expr.eval(data, Boolean.class, processContext);
                         }
 
                     });
@@ -167,10 +169,10 @@ public abstract class AbstractProcessFactory {
     public static void main(String[] args) {
         try {
             // "$.[?(@.salary >= 3000)]";
-            JsonPathParsedExpression expr = new JsonPathParsedExpression("$.[?(@.salary >= 3000)]");
+            Expression expr = ExpressionHandlerFactory.get("jsonpath", "$.[?(@.salary >= 3000)]");
             ObjectMapper mapper = new ObjectMapper();
             Object data = mapper.readTree("{ \"salary\" : 3500 } ");
-            Object ok = expr.eval(data, Object.class);
+            Object ok = expr.eval(data, Boolean.class,null);
             System.out.println(ok);
         } catch (JsonProcessingException e) {
             // do nothing

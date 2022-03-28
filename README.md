@@ -93,4 +93,4 @@ Supposing that you PoC is running on namespace **sw-runner-poc**, you can start 
 
 In a similar way you can start a Kafka consumer with the command:
 
-```kubectl -n sw-runner-poc -ti --image=quay.io/strimzi/kafka:0.28.0-kafka-3.1.0 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic decisions --from-beginning```
+```kubectl -n sw-runner-poc run kafka-consumer -ti --image=quay.io/strimzi/kafka:0.28.0-kafka-3.1.0 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic decisions --from-beginning```
