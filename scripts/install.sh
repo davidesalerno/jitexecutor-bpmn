@@ -39,14 +39,14 @@ sed -i 's/namespace: .*/namespace: '"${PROJECT_NAME}"'/' "${TARGET_DIR}"/strimzi
 $cmd apply -f "${TARGET_DIR}/strimzi-${STRIMZI_VERSION}/install/cluster-operator/" -n ${PROJECT_NAME}
 
 echo "Sleeping in order to have the strimzi operator up and running"
-if [ "$dry_run" = true ]; then
+if [ "$dry_run" != true ]; then
     sleep 5m
 fi
 
 echo "Creating Kafka cluster"
 $cmd apply -f "${TARGET_DIR}/kafka.yaml" -n ${PROJECT_NAME}
 
-if [ "$dry_run" = true ]; then
+if [ "$dry_run" != true ]; then
     sleep 3m
 fi
 
@@ -54,7 +54,7 @@ echo "Creating Kafka topics"
 $cmd apply -f "${TARGET_DIR}/kafka-topics.yaml" -n ${PROJECT_NAME}
 
 echo "Sleeping in order to have the kafka cluster with the topics created"
-if [ "$dry_run" = true ]; then
+if [ "$dry_run" != true ]; then
     sleep 1m
 fi
 
