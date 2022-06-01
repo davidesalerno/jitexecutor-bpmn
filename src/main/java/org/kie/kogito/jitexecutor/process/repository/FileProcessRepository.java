@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.jitexecutor.process.ProcessFile;
 import org.kie.kogito.jitexecutor.process.ProcessRepository;

@@ -10,8 +10,8 @@
     <java.version>11</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <version.io.quarkus>2.7.4.Final</version.io.quarkus>
-    <version.org.kie.kogito>1.19.0.Final</version.org.kie.kogito>
+    <version.io.quarkus>2.8.2.Final</version.io.quarkus>
+    <version.org.kie.kogito>1.22.0.Final</version.org.kie.kogito>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -97,6 +97,10 @@
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-services</artifactId>
     </dependency>
   </dependencies>
   <repositories>

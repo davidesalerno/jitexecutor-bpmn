@@ -18,7 +18,6 @@ package org.kie.kogito.jitexecutor.process.factory;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.serverlessworkflow.api.events.EventDefinition;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.kie.api.definition.process.Node;
@@ -62,7 +61,7 @@ public class SWFProcessFactory extends AbstractProcessFactory implements Process
         ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(workflow, JavaKogitoBuildContext.builder().build());
         RuleFlowProcess process = (RuleFlowProcess) parser.getProcessInfo().info();
         for (Node node : process.getStartNodes()) {
-            if (node.getMetaData().get(Metadata.TRIGGER_REF) != null) {
+            if (node.getMetaData().get(Metadata.TRIGGER_MAPPING_INPUT) == null) {
                 node.getMetaData().put(Metadata.TRIGGER_MAPPING_INPUT, SWFConstants.DEFAULT_WORKFLOW_VAR);
             }
         }

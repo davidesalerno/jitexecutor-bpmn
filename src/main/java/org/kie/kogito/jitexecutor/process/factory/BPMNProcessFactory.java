@@ -21,7 +21,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.util.io.ByteArrayResource;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.kie.kogito.jitexecutor.process.ProcessBuild;

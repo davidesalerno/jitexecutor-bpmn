@@ -30,6 +30,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.process.instance.impl.ReturnValueEvaluator;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -49,6 +50,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jitexecutor.process.ProcessBuild;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.mvel2.ErrorDetail;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
@@ -114,7 +116,7 @@ public abstract class AbstractProcessFactory {
         for (Iterator<Map.Entry<ConnectionRef, Constraint>> it = map.entrySet().iterator(); it.hasNext();) {
             Map.Entry<ConnectionRef, Constraint> entry = it.next();
             ConnectionRef connection = entry.getKey();
-            ConstraintImpl constraint = (ConstraintImpl) entry.getValue();
+            ReturnValueConstraintEvaluator constraint = (ReturnValueConstraintEvaluator) entry.getValue();
             Connection outgoingConnection = null;
             for (Connection out : splitNode.getDefaultOutgoingConnections()) {
                 if (out.getToType().equals(connection.getToType())
@@ -127,30 +129,14 @@ public abstract class AbstractProcessFactory {
             }
             if (constraint == null && splitNode.isDefault(outgoingConnection)) {
                 // do nothing since conditions are ignored for default sequence flow
-            } else if (constraint != null) {
-                ReturnValueConstraintEvaluator contraintEvaluator = new ReturnValueConstraintEvaluator();
-                contraintEvaluator.setDialect(constraint.getDialect());
-                contraintEvaluator.setName(constraint.getName());
-                contraintEvaluator.setPriority(constraint.getPriority());
-                contraintEvaluator.setDefault(constraint.isDefault());
-                contraintEvaluator.setType(constraint.getType());
-                contraintEvaluator.setConstraint(constraint.getConstraint());
-                splitNode.setConstraint(outgoingConnection, contraintEvaluator);
-                String variable = (String) constraint.getMetaData("Variable");
+            } else if (constraint != null && constraint instanceof ReturnValueConstraintEvaluator) {
+                splitNode.setConstraint(outgoingConnection, constraint);
                 if (constraint.getDialect().equals("jsonpath")) {
-                    contraintEvaluator.setEvaluator(new ReturnValueEvaluator() {
-                        private Expression expr = ExpressionHandlerFactory.get("jsonpath", constraint.getConstraint());
-
-                        @Override
-                        public Object evaluate(KogitoProcessContext processContext) throws Exception {
-                            Object data = processContext.getVariable(variable);
-                            return expr.eval(data, Boolean.class, processContext);
-                        }
-
-                    });
+                    //
+                    // Nothing to do
                 } else {
                     ProcessDialect dialect = ProcessDialectRegistry.getDialect(constraint.getDialect());
-                    dialect.getReturnValueEvaluatorBuilder().build(null, contraintEvaluator, null, splitNode);
+                    dialect.getReturnValueEvaluatorBuilder().build(null, constraint, null, splitNode);
                 }
             }
         }
